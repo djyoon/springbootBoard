@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+{{> include/header }}
+
+<div style="margin:5%;">
+    <table class="table table-striped" style="margin-bottom:80%; text-align: center;">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">회원 ID</th>
+            <th scope="col">Email</th>
+            <th scope="col">GitHub ID</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#members}}
+        <tr>
+            <th scope="row">{{seqUse}}</th>
+            <td><a href="/board/view/{{seqUse}}">{{userId}}</a></td>
+            <td>{{email}}</td>
+            <td>{{gitId}}</td>
+        </tr>
+        {{/members}}
+        </tbody>
+    </table>
+</div>
+{{> /include/footer }}
+</html>

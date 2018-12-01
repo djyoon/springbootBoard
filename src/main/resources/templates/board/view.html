@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+{{> include/header }}
+
+<div style="margin-bottom:80%; margin:3%">
+    <!-- Material input -->
+    {{#question}}
+
+    <h1 style="word-break: break-all">{{title}}</h1><h3>{{author}} {{regTime}}</h3>
+    <hr style="background-color:black; margin-bottom:3%;">
+    <p style="word-break: break-all">
+        {{content}}
+    </p>
+    <hr style="background-color:black; margin-top :3%">
+    <div style="margin-bottom:3%">
+        {{#isAuthor}}
+        <!-- Button trigger modal -->
+        <a type="button" class="btn btn-primary" data-toggle="modal" data-target="#basicExampleModal">수정</a>
+
+        <!-- Modal -->
+        <div class="modal fade" id="basicExampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">수정하기</h5>
+                        <a type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </a>
+                    </div>
+                    <form action="/board/modify" method="post" class="needs-validation" novalidate>
+                        <div class="modal-body">
+                            <!-- Material input -->
+                            <input type="hidden" id="seqQue" name="seqQue" value="{{seqQue}}">
+                            <p><label for="title">제 목</label>
+                                <input type="text" id="title" name="title" class="form-control" value ="{{title}}"required>
+                            </p>
+
+                            <div class="form-group">
+                                <p><label for="content">내 용</label>
+                                    <textarea class="form-control rounded-0" id="content" name="content" rows="10" required>{{content}}</textarea>
+                                </p>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary">수정</button>
+                            <button class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+            <button type="button" id="del" class="btn btn-primary">삭제</button>
+        {{/isAuthor}}
+    </div>
+
+     <div id="replyForm">
+         {{#answers.size}}
+         <h5>댓글 {{answers.size}}</h5>
+         <input class="form-control" type="text" id="replyText" placeholder="댓글 입력" style="width:50%; display:inline-block">
+         <button type="button" id="reply"class="btn btn-primary" disabled>댓글</button>
+         {{/answers.size}}
+            {{#answers}}
+                 <div style="font-weight: bold; color: gray">{{author}} {{regDate}}</div>
+                 <p style="word-break: break-all">  {{content}} </p>
+            {{/answers}}
+     </div>
+    {{/question}}
+
+</div>
+
+{{> include/footer }}
+<script>
+
+    (function(){
+
+        $('button').click(function(){
+            var url = "";
+            var data = {};
+            var btnId =  $(this).attr("id");
+
+            if ("reply" == btnId) {
+                url = "/board/reply";
+                data = {"seqQue":"{{seqQue}}", "replyText" : $("#replyText").val()}
+            } else if ("del" == btnId) {
+                url = "/board/delete";
+                data = {"seqQue":"{{seqQue}}"}
+            }
+
+            $.ajax({
+                url : url,
+                type : "post",
+                data : data,
+                success : function(data){
+                    if("reply" == data) {
+                        window.location.reload();
+                    } else if ( "delete" == data){
+                        window.location.replace("/board/list");
+                    }
+                }
+            })
+        })
+
+        $("#replyText").focus(function(){
+           setInterval(function(){
+               if($("#replyText").val() != "") {
+                   $("#reply").attr("disabled",false);
+               } else {
+                   $("#reply").attr("disabled",true);
+               }
+           },1500);
+        });
+
+    })();
+
+</script>
+</html>

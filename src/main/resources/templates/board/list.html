@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{{> /include/header }}
+    <!-- Modal -->
+    <div class="modal fade" id="basicExampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">질문하기</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="/board/insert" method="post" class="needs-validation" novalidate>
+                    <div class="modal-body">
+                        <!-- Material input -->
+                            <p><label for="title">제 목</label>
+                            <input type="text" id="title" name="title" class="form-control" required>
+                            </p>
+
+                            <div class="form-group">
+                               <p><label for="content">내 용</label>
+                                <textarea class="form-control rounded-0" id="content" name="content" rows="10" required></textarea>
+                               </p>
+                            </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary">등록</button>
+                        <button class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+<div style="margin:4%;">
+    <button class="btn btn-primary" style="float:right;"data-toggle="modal" data-target="#basicExampleModal">
+        질문하기
+    </button>
+    <table class="table table-striped" style="margin-bottom:80%; text-align: center;">
+        <thead>
+        <tr>
+            <th scope="col" width="5%">글 번호</th>
+            <th scope="col" width="80%">제 목</th>
+            <th scope="col" width="10%">작성자</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#questions}}
+        <tr>
+            <th scope="row">{{seqQue}}</th>
+            <td><a href="/board/view/{{seqQue}}">{{title}}</a></td>
+            <td>{{author}}</td>
+        </tr>
+        {{/questions}}
+        </tbody>
+    </table>
+</div>
+{{> /include/footer }}
+</html>
