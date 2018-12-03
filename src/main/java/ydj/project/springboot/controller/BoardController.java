@@ -1,6 +1,9 @@
 package ydj.project.springboot.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -28,9 +31,12 @@ public class BoardController {
     AnswerRepository answerRepository;
 
     @GetMapping("list")
-    public String boardList(Model model) {
+    public String boardList(Model model,
+                            @PageableDefault(size=15, sort="seqQue",direction = Sort.Direction.DESC) Pageable pageable) {
 
-        model.addAttribute("questions",boardRepository.findAll());
+        model.addAttribute("questions",boardRepository.findAll(pageable));
+        model.addAttribute("totalPage",boardRepository.findAll(pageable).getTotalPages());
+        model.addAttribute("curPage",boardRepository.findAll(pageable).getNumber());
 
         return "/board/list";
     }

@@ -39,7 +39,7 @@
     <button class="btn btn-primary" style="float:right;"data-toggle="modal" data-target="#basicExampleModal">
         질문하기
     </button>
-    <table id="dtBasicExample" class="table table-striped" style="margin-bottom:30%; text-align: center; ">
+    <table class="table table-striped" style="margin-bottom:10%; text-align: center; ">
         <thead>
         <tr>
             <th scope="col" width="5%">글 번호</th>
@@ -50,6 +50,7 @@
         <tbody>
         {{#questions}}
         <tr>
+
             <th scope="row">{{seqQue}}</th>
             <td><a href="/board/view/{{seqQue}}">{{title}}</a></td>
             <td>{{author}}</td>
@@ -59,16 +60,43 @@
     </table>
 
     <nav aria-label="Page navigation example">
+
         <ul class="pagination pg-blue" style="justify-content: center; align-content: center;">
-            <li class="page-item"><a class="page-link">Previous</a></li>
-            <li class="page-item"><a class="page-link">1</a></li>
-            <li class="page-item"><a class="page-link">2</a></li>
-            <li class="page-item"><a class="page-link">3</a></li>
-            <li class="page-item"><a class="page-link">Next</a></li>
+            <li class="page-item"><a class="page-link" id="prev">이전</a></li>
+            <li class="page-item" id="paging"><a class="page-link" id="next">다음</a></li>
+
         </ul>
     </nav>
 
 </div>
+<script>
+    // Paging
+    (function(){
+        var totalCount = "{{totalPage}}";
+        var pageSize = "15";
+        var pageSort = "seqQue,desc";
+
+        var  prevPage = Number("{{curPage}}") - 1;
+        var  nextPage = Number("{{curPage}}") + 1;
+
+        $("a[id=prev]").attr("href","/board/list?page="+prevPage+"&size="+pageSize+"&sort="+pageSort);
+        $("a[id=next]").attr("href","/board/list?page="+nextPage+"&size="+pageSize+"&sort="+pageSort);
+
+        if(nextPage == totalCount){
+            $("a[id=next]").css('display','none');
+        }
+        if(0 > prevPage){
+            $("a[id=prev]").css('display','none');
+        }
+
+        for(i = 0; i < totalCount ; i++ ){;
+            $("#paging").before('<li class="page-item"><a class="page-link" href="/board/list?page='+i+'&size='+pageSize+'&sort='+pageSort+'">'+Number(i+1)+'</a></li>');
+        }
+
+    })();
+
+
+</script>
 
 {{> /include/footer }}
 </html>

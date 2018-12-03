@@ -1,7 +1,6 @@
 package ydj.project.springboot.VO;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -12,17 +11,22 @@ import java.util.List;
 /**
  * Created by djyoon on 2018-11-27.
  */
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@RequiredArgsConstructor
 @Entity
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seqQue;
 
+    @NonNull
     private String author;
+    @NonNull
     private String title;
     @Lob
+    @NonNull
     private String content;
 
     @OneToMany(mappedBy = "question")

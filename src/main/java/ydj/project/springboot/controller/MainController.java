@@ -6,7 +6,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import ydj.project.springboot.VO.Question;
 import ydj.project.springboot.VO.User;
+import ydj.project.springboot.repository.BoardRepository;
 import ydj.project.springboot.repository.MainRepository;
 
 import javax.servlet.http.HttpSession;
@@ -17,11 +19,19 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class MainController {
 
+  /*  @Autowired
+    private BoardRepository boardRepository;*/
     @Autowired
     private MainRepository mainRepository;
 
     @GetMapping("/")
     public String hello(){
+/*
+        for(int i=0; i<30 ; i++){
+            boardRepository.save(new Question("djyoon",i+"번 게시글",i+"번 게시글"));
+        }
+
+        mainRepository.save(new User("djyoon","test","테스트용계정"));*/
         return "/index";
     }
 

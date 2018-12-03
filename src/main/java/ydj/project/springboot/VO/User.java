@@ -1,15 +1,17 @@
 package ydj.project.springboot.VO;
 
-import lombok.Getter;
-import lombok.Setter;
+import jdk.nashorn.internal.objects.annotations.Constructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 /**
  * Created by djyoon on 2018-11-20.
  */
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@RequiredArgsConstructor
 @Entity
 public class User {
 
@@ -17,12 +19,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seqUse;
 
+    @NonNull
     private String userId;
-
+    @NonNull
     private String passWd;
-
+    @NonNull
     private String email;
-
     private String gitId;
 }
 

@@ -8,7 +8,7 @@ import ydj.project.springboot.VO.Question;
 /**
  * Created by djyoon on 2018-11-30.
  */
-public interface AnswerRepository extends JpaRepository<Answer, Long> {
+public interface  AnswerRepository extends JpaRepository<Answer, Long> {
 
     @Transactional
     void deleteAllByQuestion(Question question);
