@@ -19,26 +19,6 @@
     <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     <!-- MDB core JavaScript -->
     <script type="text/javascript" src="/js/mdb.min.js"></script>
-    <script>
-        // Example starter JavaScript for disabling form submissions if there are invalid fields
-        (function() {
-            'use strict';
-            window.addEventListener('load', function() {
-                // Fetch all the forms we want to apply custom Bootstrap validation styles to
-                var forms = document.getElementsByClassName('needs-validation');
-                // Loop over them and prevent submission
-                var validation = Array.prototype.filter.call(forms, function(form) {
-                    form.addEventListener('submit', function(event) {
-                        if (form.checkValidity() === false) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                        }
-                        form.classList.add('was-validated');
-                    }, false);
-                });
-            }, false);
-        })();
-    </script>
 </head>
 <header>
     <!--Navbar-->
@@ -113,7 +93,7 @@
         </div>
     </div>
 </form>
-    <form action="/user/join" method="post" class="needs-validation" novalidate>
+    <form id="joinForm" action="/user/join" method="post" class="needs-validation" novalidate>
         <div class="modal fade" id="modalJoinForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
              aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -128,7 +108,9 @@
                         <div class="md-form mb-5">
                             <label data-error="wrong" data-success="right" for="userId">Your ID</label>
                             <br/><br/>
-                            <input type="text" id="userId_join" name="userId" class="form-control validate" style="color:cornflowerblue;" required/>
+                            <input type="text" id="userId_join" name="userId" class="form-control validate" style="color:cornflowerblue; margin:0;" required/>
+                            <input type="hidden" id="tempId"/>
+                            <span id="validLabel" style="font-size: small;"></span>
                         </div>
 
                         <div class="md-form mb-4">
@@ -165,7 +147,6 @@
                 <div class="dropdown-menu dropdown-primary">
                     <a class="dropdown-item" href="/">Home</a>
                     <a class="dropdown-item" href="/board/list">게시판</a>
-                    <a class="dropdown-item" href="/user/list">회원 목록</a>
                 </div>
             </li>
         </ul>
@@ -173,4 +154,55 @@
 
 <!--Navbar-->
 </header>
+<script>
+
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function() {
+
+        window.addEventListener('load', function() {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+
+
+        $('#joinForm [id="userId_join"]').change(function(){
+
+            //TODO 동일 ID시 ajax 재호출 방지
+            var tempId = $("#tempId").val($("#userId_join").val());
+
+            if($("#userId_join").val() != "" && tempId != $("#userId_join").val() ) {
+                idCheck($("#userId_join").val());
+            }
+        });
+
+    })();
+
+    function idCheck(value){
+        $.ajax({
+            url : "/user/valid/"+value,
+            type : "get",
+            success : function(data){
+                if("exist" == data) {
+                    $("#validLabel").text("Oops! already exists");
+                    $("#validLabel").css("color","red");
+                } else if ( "ok" == data){
+                    $("#validLabel").text("OK!");
+                    $("#validLabel").css("color","#28a745");
+
+                }
+            }
+        });
+    }
+
+</script>
 </html>

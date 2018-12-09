@@ -1,11 +1,11 @@
 package ydj.project.springboot.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ydj.project.springboot.VO.Question;
 import ydj.project.springboot.VO.User;
 import ydj.project.springboot.repository.BoardRepository;
@@ -18,20 +18,23 @@ import javax.servlet.http.HttpSession;
  */
 @Controller
 public class MainController {
+    @Autowired
+    private BoardRepository boardRepository;
 
-  /*  @Autowired
-    private BoardRepository boardRepository;*/
     @Autowired
     private MainRepository mainRepository;
 
     @GetMapping("/")
-    public String hello(){
-/*
-        for(int i=0; i<30 ; i++){
-            boardRepository.save(new Question("djyoon",i+"번 게시글",i+"번 게시글"));
+    public String hello(HttpSession session){
+
+        if( session.getAttribute("isTest") == null ) {
+            mainRepository.save(new User("test","test","테스트용계정"));
+            for(int i=0; i<30 ; i++){
+                boardRepository.save(new Question("djyoon",i+"번 게시글",i+"번 게시글"));
+            }
+            session.setAttribute("isTest",true);
         }
 
-        mainRepository.save(new User("djyoon","test","테스트용계정"));*/
         return "/index";
     }
 
@@ -64,12 +67,22 @@ public class MainController {
         return "redirect:/";
     }
 
+    @GetMapping("/user/valid/{userId}")
+    @ResponseBody
+    public ResponseEntity userIdCheck(@PathVariable String userId){
 
-    @GetMapping("/user/list")
-    public String userList(Model model) {
+        User user = null;
 
-        model.addAttribute("members",mainRepository.findAll());
-
-        return "/user/list";
+        try{
+            user = mainRepository.findByUserId(userId);
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            if(user != null){
+                return new ResponseEntity("exist", HttpStatus.OK);
+            } else {
+                return new ResponseEntity("ok",HttpStatus.OK);
+            }
+        }
     }
 }

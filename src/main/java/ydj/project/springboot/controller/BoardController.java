@@ -18,6 +18,7 @@ import ydj.project.springboot.repository.BoardRepository;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 
+
 /**
  * Created by djyoon on 2018-11-27.
  */
@@ -84,7 +85,6 @@ public class BoardController {
             } else {
                 return new ResponseEntity("delete",HttpStatus.INTERNAL_SERVER_ERROR);
             }
-
         }
     }
 
