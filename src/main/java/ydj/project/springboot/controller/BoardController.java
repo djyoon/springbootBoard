@@ -14,6 +14,7 @@ import ydj.project.springboot.VO.Question;
 import ydj.project.springboot.VO.User;
 import ydj.project.springboot.repository.AnswerRepository;
 import ydj.project.springboot.repository.BoardRepository;
+import ydj.project.springboot.service.MainService;
 
 import javax.servlet.http.HttpSession;
 import java.util.Map;
@@ -27,17 +28,15 @@ import java.util.Map;
 public class BoardController {
 
     @Autowired
-    BoardRepository boardRepository;
-    @Autowired
-    AnswerRepository answerRepository;
+    private MainService mainService;
 
     @GetMapping("list")
     public String boardList(Model model,
                             @PageableDefault(size=15, sort="seqQue",direction = Sort.Direction.DESC) Pageable pageable) {
 
-        model.addAttribute("questions",boardRepository.findAll(pageable));
-        model.addAttribute("totalPage",boardRepository.findAll(pageable).getTotalPages());
-        model.addAttribute("curPage",boardRepository.findAll(pageable).getNumber());
+        model.addAttribute("questions",mainService.pageFindAll(pageable));
+        model.addAttribute("totalPage",mainService.pageFindAll(pageable).getTotalPages());
+        model.addAttribute("curPage",mainService.pageFindAll(pageable).getNumber());
 
         return "/board/list";
     }
@@ -46,7 +45,7 @@ public class BoardController {
     public String boardInsert(HttpSession session, Question question){
 
         question.setAuthor(((User)session.getAttribute("loginUser")).getUserId());
-        boardRepository.save(question);
+        mainService.saveBoard(question);
 
         return "redirect:/board/list";
 
@@ -55,12 +54,12 @@ public class BoardController {
     @PostMapping("modify")
     public String boardModify(Question question){
 
-        Question tempQuestion = boardRepository.getOne(question.getSeqQue());
+        Question tempQuestion = mainService.getOneBoard(question.getSeqQue());
 
         tempQuestion.setTitle(question.getTitle());
         tempQuestion.setContent(question.getContent());
 
-        boardRepository.save(tempQuestion);
+        mainService.saveBoard(tempQuestion);
 
         return "redirect:/board/view/"+question.getSeqQue();
 
@@ -73,8 +72,8 @@ public class BoardController {
         boolean success = true;
 
         try{
-            answerRepository.deleteAllByQuestion(question);
-            boardRepository.delete(question);
+            mainService.deleteAllByQuestion(question);
+            mainService.deleteBoard(question);
         }catch(Exception e){
             success = false;
             e.printStackTrace();
@@ -94,7 +93,7 @@ public class BoardController {
         boolean isAuthor = false;
         String loginUser = ((User)session.getAttribute("loginUser")).getUserId();
 
-        Question question = boardRepository.findBySeqQue(seqQue);
+        Question question = mainService.findBySeqQueBoard(seqQue);
         String author = question.getAuthor();
 
         if(loginUser.equals(author)){
@@ -117,7 +116,7 @@ public class BoardController {
           boolean success = true;
 
             try{
-                answerRepository.save(answer);
+                mainService.saveAnswer(answer);
             }catch(Exception e){
                 success = false;
                 e.printStackTrace();

@@ -10,6 +10,7 @@ import ydj.project.springboot.VO.Question;
 import ydj.project.springboot.VO.User;
 import ydj.project.springboot.repository.BoardRepository;
 import ydj.project.springboot.repository.MainRepository;
+import ydj.project.springboot.service.MainService;
 
 import javax.servlet.http.HttpSession;
 
@@ -18,19 +19,18 @@ import javax.servlet.http.HttpSession;
  */
 @Controller
 public class MainController {
-    @Autowired
-    private BoardRepository boardRepository;
+
 
     @Autowired
-    private MainRepository mainRepository;
+    private MainService mainService;
 
     @GetMapping("/")
     public String hello(HttpSession session){
 
         if( session.getAttribute("isTest") == null ) {
-            mainRepository.save(new User("test","test","테스트용계정"));
+            mainService.saveMain(new User("test","test","테스트용계정"));
             for(int i=0; i<30 ; i++){
-                boardRepository.save(new Question("djyoon",i+"번 게시글",i+"번 게시글"));
+                mainService.saveBoard(new Question("djyoon",i+"번 게시글",i+"번 게시글"));
             }
             session.setAttribute("isTest",true);
         }
@@ -41,7 +41,7 @@ public class MainController {
     @PostMapping("/user/login")
     public String userLogin(User tempUser, HttpSession session){
 
-        User user = mainRepository.findByUserId(tempUser.getUserId());
+        User user = mainService.findByUserId(tempUser.getUserId());
 
         if( user == null){
             return "redirect:/";
@@ -62,7 +62,7 @@ public class MainController {
 
     @PostMapping("/user/join")
     public String userJoin(User user, HttpSession session){
-        mainRepository.save(user);
+        mainService.saveMain(user);
         session.setAttribute("loginUser", user);
         return "redirect:/";
     }
@@ -74,7 +74,7 @@ public class MainController {
         User user = null;
 
         try{
-            user = mainRepository.findByUserId(userId);
+            user = mainService.findByUserId(userId);
         }catch(Exception e){
             e.printStackTrace();
         }finally {
